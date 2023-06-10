@@ -3,7 +3,7 @@ package com.example.crud_teb;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MainSceneController {
     @FXML
     private Label welcomeText;
 
