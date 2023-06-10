@@ -3,26 +3,57 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crud_teb.MainSceneController">
    <children>
-      <TableView fx:id="tableView" layoutX="14.0" layoutY="15.0" prefHeight="370.0" prefWidth="378.0">
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="15.0" prefHeight="370.0" prefWidth="370.0" style="-fx-text-alignment: center;">
         <columns>
-          <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="NAME" />
-            <TableColumn fx:id="surnameColumn" prefWidth="75.0" text="SURNAME" />
-            <TableColumn fx:id="peselColumn" prefWidth="75.0" text="PESEL" />
-            <TableColumn fx:id="salaryColumn" prefWidth="75.0" text="SALARY" />
+          <TableColumn fx:id="idColumn" maxWidth="30.0" minWidth="30.0" prefWidth="28.800018310546875" resizable="false" style="-fx-alignment: center;" text="ID" />
+          <TableColumn fx:id="nameColumn" prefWidth="96.0" style="-fx-alignment: center;" text="NAME" />
+            <TableColumn fx:id="surnameColumn" maxWidth="96.0" minWidth="96.0" prefWidth="95.20001220703125" style="-fx-alignment: center;" text="SURNAME" />
+            <TableColumn fx:id="peselColumn" maxWidth="80.0" minWidth="80.0" prefWidth="68.79998779296875" resizable="false" style="-fx-alignment: center;" text="PESEL" />
+            <TableColumn fx:id="salaryColumn" maxWidth="65.0" minWidth="60.0" prefWidth="65.5999755859375" resizable="false" style="-fx-alignment: center;" text="SALARY" />
         </columns>
       </TableView>
-      <VBox alignment="CENTER" layoutX="410.0" layoutY="15.0" prefHeight="370.0" prefWidth="175.0" style="-fx-spacing: 50;">
+      <VBox alignment="CENTER" layoutX="410.0" layoutY="15.0" prefHeight="370.0" prefWidth="175.0" style="-fx-spacing: 20;">
          <children>
-            <Button mnemonicParsing="false" onAction="#addButton" text="Add" />
-            <Button mnemonicParsing="false" onAction="#editButton" text="Edit" />
-            <Button mnemonicParsing="false" onAction="#deleteButton" text="Delete" />
+            <Button mnemonicParsing="false" onAction="#addButton">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../icons/add-user.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button mnemonicParsing="false" onAction="#editButton">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../icons/edit-info.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button mnemonicParsing="false" onAction="#deleteButton">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../icons/delete-user.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button mnemonicParsing="false" onAction="#refreshButton">
+               <graphic>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../icons/refresh-page-option.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </VBox>
    </children>

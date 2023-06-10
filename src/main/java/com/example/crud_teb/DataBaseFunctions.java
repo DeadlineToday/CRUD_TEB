@@ -1,14 +1,12 @@
 package com.example.crud_teb;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DataBaseFunctions {
 
     Statement statement;
     String query;
+    ResultSet resultSet;
 
     public Connection connectToDB() {
 
@@ -35,7 +33,7 @@ public class DataBaseFunctions {
                 "name VARCHAR(50), " +
                 "surname VARCHAR(50), " +
                 "pesel VARCHAR(11), " +
-                "salary DOUBLE PRECISION, " +
+                "salary DECIMAL(10,2), " +
                 "PRIMARY KEY(id))";
 
         try {
@@ -44,5 +42,37 @@ public class DataBaseFunctions {
             System.out.println(e.getMessage());
         }
     }*/
+
+    public boolean addUser(Connection connection, String name, String surname, String pesel, double salary) throws SQLException {
+
+        statement = connection.createStatement();
+
+        query = "SELECT MAX(id) AS maxId FROM user_information";
+        resultSet = statement.executeQuery(query);
+        resultSet.next();
+
+        try {
+        query = String.format("INSERT INTO user_information (id, name, surname, pesel, salary)VALUES ('%s', '%s','%s', '%s', '%s')", resultSet.getInt("maxId") + 1, name, surname, pesel, salary );
+
+        statement.executeUpdate(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    public ResultSet selectInformation(Connection connection) throws SQLException {
+
+        statement = connection.createStatement();
+
+        query = "SELECT * FROM user_information";
+
+        resultSet = statement.executeQuery(query);
+
+        return resultSet;
+    }
 
 }
