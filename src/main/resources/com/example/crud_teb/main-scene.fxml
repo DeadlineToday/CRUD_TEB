@@ -7,22 +7,22 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crud_teb.MainSceneController">
    <children>
-      <TableView layoutX="14.0" layoutY="15.0" prefHeight="370.0" prefWidth="378.0">
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="15.0" prefHeight="370.0" prefWidth="378.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="ID" />
-          <TableColumn prefWidth="75.0" text="NAME" />
-            <TableColumn prefWidth="75.0" text="SURNAME" />
-            <TableColumn prefWidth="75.0" text="PESEL" />
-            <TableColumn prefWidth="75.0" text="SALARY" />
+          <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="NAME" />
+            <TableColumn fx:id="surnameColumn" prefWidth="75.0" text="SURNAME" />
+            <TableColumn fx:id="peselColumn" prefWidth="75.0" text="PESEL" />
+            <TableColumn fx:id="salaryColumn" prefWidth="75.0" text="SALARY" />
         </columns>
       </TableView>
       <VBox alignment="CENTER" layoutX="410.0" layoutY="15.0" prefHeight="370.0" prefWidth="175.0" style="-fx-spacing: 50;">
          <children>
-            <Button mnemonicParsing="false" text="Button" />
-            <Button mnemonicParsing="false" text="Button" />
-            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" onAction="#addButton" text="Add" />
+            <Button mnemonicParsing="false" onAction="#editButton" text="Edit" />
+            <Button mnemonicParsing="false" onAction="#deleteButton" text="Delete" />
          </children>
       </VBox>
    </children>
