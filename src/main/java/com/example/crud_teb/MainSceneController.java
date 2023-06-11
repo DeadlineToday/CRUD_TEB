@@ -3,16 +3,13 @@ package com.example.crud_teb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 
 import java.net.URL;
@@ -26,6 +23,7 @@ public class MainSceneController implements Initializable {
     DataBaseFunctions dataBaseFunctions = new DataBaseFunctions();
     Connection connection;
     ObservableList<UserInformation> userInformationObservableList = FXCollections.observableArrayList();
+    Validation validation = new Validation();
 
     @FXML
     private TableColumn<UserInformation, String> idColumn;
@@ -45,7 +43,6 @@ public class MainSceneController implements Initializable {
     @FXML
     private TableView<UserInformation> tableView;
 
-
     @FXML
     private Label messageLabel;
 
@@ -64,23 +61,73 @@ public class MainSceneController implements Initializable {
     @FXML
     void addButton() throws SQLException {
 
-        DataBaseFunctions dataBaseFunctions = new DataBaseFunctions();
-        Connection connection = dataBaseFunctions.connectToDB();
-        if (dataBaseFunctions.addUser(connection, nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), Double.parseDouble(salaryTextField.getText()))) {
+        messageLabel.setText(null);
 
-            messageLabel.setTextFill(Color.GREEN);
-            messageLabel.setText("User saved");
+
+        if (validation.isValidNameAndSurname(nameTextField.getText()) &&
+                validation.isValidNameAndSurname(surnameTextField.getText()) &&
+                validation.isValidPesel(peselTextField.getText()) &&
+                validation.isValidSalary(salaryTextField.getText())) {
+
+            DataBaseFunctions dataBaseFunctions = new DataBaseFunctions();
+            Connection connection = dataBaseFunctions.connectToDB();
+            if (dataBaseFunctions.addUser(connection, nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), Double.parseDouble(salaryTextField.getText()))) {
+
+                messageLabel.setTextFill(Color.GREEN);
+                messageLabel.setText("User saved");
+
+                clearTextFields();
+                clearBackgroundsColor();
+                refreshTable();
+
+            } else {
+
+                messageLabel.setTextFill(Color.RED);
+                messageLabel.setText("Try again");
+            }
         } else {
+
             messageLabel.setTextFill(Color.RED);
             messageLabel.setText("Try again");
-        }
 
-        clearTextFields();
-        refreshTable();
+            if (!nameTextField.getText().isEmpty() ) {
+                if (validation.isValidNameAndSurname(nameTextField.getText())) {
+                    nameTextField.setStyle("-fx-background-radius: 0;");
+                } else {
+                    nameTextField.setStyle("-fx-border-color: red;");
+                }
+            }
+
+            if (!surnameTextField.getText().isEmpty()) {
+                if (validation.isValidNameAndSurname(surnameTextField.getText())) {
+                    surnameTextField.setStyle("-fx-background-radius: 0;");
+                } else {
+                    surnameTextField.setStyle("-fx-border-color: red;");
+                }
+            }
+
+            if (!peselTextField.getText().isEmpty()) {
+                if (validation.isValidPesel(peselTextField.getText())) {
+                    peselTextField.setStyle("-fx-background-radius: 0;");
+                } else {
+                    peselTextField.setStyle("-fx-border-color: red;");
+                }
+            }
+
+            if (!salaryTextField.getText().isEmpty()) {
+                if (validation.isValidSalary(salaryTextField.getText())) {
+                    salaryTextField.setStyle("-fx-background-radius: 0;");
+                } else {
+                    salaryTextField.setStyle("-fx-border-color: red;");
+                }
+            }
+        }
     }
 
     @FXML
     void deleteButton() throws SQLException {
+
+        messageLabel.setText(null);
 
         UserInformation userInformation = tableView.getSelectionModel().getSelectedItem();
 
@@ -100,6 +147,9 @@ public class MainSceneController implements Initializable {
     @FXML
     void editButton() throws SQLException {
 
+        messageLabel.setText(null);
+        clearBackgroundsColor();
+
         UserInformation userInformation = tableView.getSelectionModel().getSelectedItem();
 
         connection = dataBaseFunctions.connectToDB();
@@ -107,38 +157,64 @@ public class MainSceneController implements Initializable {
         if (tableView.getSelectionModel().getSelectedItem() == null) {
 
             messageLabel.setTextFill(Color.RED);
-            messageLabel.setText("No item selected");
+            messageLabel.setText("No items selected");
         } else {
 
-            if (nameTextField != null) {
-                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "name", nameTextField.getText());
+            if (!nameTextField.getText().isEmpty() ) {
+                if (validation.isValidNameAndSurname(nameTextField.getText())) {
+                    dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "name", nameTextField.getText());
+                    nameTextField.setStyle("-fx-background-radius: 0;");
+                    nameTextField.clear();
+                } else {
+                    nameTextField.setStyle("-fx-border-color: red;");
+                }
             }
 
-            if (surnameTextField != null) {
-                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "surname", surnameTextField.getText());
+            if (!surnameTextField.getText().isEmpty()) {
+                if (validation.isValidNameAndSurname(surnameTextField.getText())) {
+                    dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "surname", surnameTextField.getText());
+                    surnameTextField.setStyle("-fx-background-radius: 0;");
+                    surnameTextField.clear();
+                } else {
+                    surnameTextField.setStyle("-fx-border-color: red;");
+                }
             }
 
-            if (peselTextField != null) {
-                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "pesel", peselTextField.getText());
+            if (!peselTextField.getText().isEmpty()) {
+                if (validation.isValidPesel(peselTextField.getText())) {
+                    dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "pesel", peselTextField.getText());
+                    peselTextField.setStyle("-fx-background-radius: 0;");
+                    peselTextField.clear();
+                } else {
+                    peselTextField.setStyle("-fx-border-color: red;");
+                }
             }
 
-            if (salaryTextField != null) {
-                dataBaseFunctions.updateUserSalary(connection, userInformation.getId(), Double.parseDouble(salaryTextField.getText()));
+            if (!salaryTextField.getText().isEmpty()) {
+                if (validation.isValidSalary(salaryTextField.getText())) {
+                    dataBaseFunctions.updateUserSalary(connection, userInformation.getId(), Double.parseDouble(salaryTextField.getText()));
+                    salaryTextField.setStyle("-fx-background-radius: 0;");
+                    salaryTextField.clear();
+                } else {
+                    salaryTextField.setStyle("-fx-border-color: red;");
+                }
             }
         }
 
-        clearTextFields();
         refreshTable();
     }
 
     @FXML
     void refreshButton() throws SQLException {
 
+        messageLabel.setText(null);
         refreshTable();
-
+        clearBackgroundsColor();
+        clearTextFields();
     }
     @FXML
     public void refreshTable() throws SQLException {
+
         userInformationObservableList.clear();
 
         connection = dataBaseFunctions.connectToDB();
@@ -162,6 +238,8 @@ public class MainSceneController implements Initializable {
         }
 
         tableView.setItems(userInformationObservableList);
+
+
     }
 
     public void clearTextFields() {
@@ -169,6 +247,13 @@ public class MainSceneController implements Initializable {
         surnameTextField.clear();
         peselTextField.clear();
         salaryTextField.clear();
+    }
+
+    public void clearBackgroundsColor() {
+        nameTextField.setStyle("-fx-background-radius: 0;");
+        surnameTextField.setStyle("-fx-background-radius: 0;");
+        peselTextField.setStyle("-fx-background-radius: 0;");
+        salaryTextField.setStyle("-fx-background-radius: 0;");
     }
 
     @Override
