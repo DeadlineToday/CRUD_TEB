@@ -4,19 +4,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class MainSceneController {
+public class MainSceneController implements Initializable {
 
     DataBaseFunctions dataBaseFunctions = new DataBaseFunctions();
     Connection connection;
@@ -41,30 +46,89 @@ public class MainSceneController {
     private TableView<UserInformation> tableView;
 
 
+    @FXML
+    private Label messageLabel;
 
     @FXML
-    void addButton() throws IOException {
+    private TextField nameTextField;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("add-user-scene.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 170, 220);
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Add Order");
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
+    @FXML
+    private TextField surnameTextField;
 
+    @FXML
+    private TextField peselTextField;
+
+    @FXML
+    private TextField salaryTextField;
+
+    @FXML
+    void addButton() throws SQLException {
+
+        DataBaseFunctions dataBaseFunctions = new DataBaseFunctions();
+        Connection connection = dataBaseFunctions.connectToDB();
+        if (dataBaseFunctions.addUser(connection, nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), Double.parseDouble(salaryTextField.getText()))) {
+
+            messageLabel.setTextFill(Color.GREEN);
+            messageLabel.setText("User saved");
+        } else {
+            messageLabel.setTextFill(Color.RED);
+            messageLabel.setText("Try again");
+        }
+
+        clearTextFields();
+        refreshTable();
     }
 
     @FXML
-    void deleteButton() {
+    void deleteButton() throws SQLException {
 
+        UserInformation userInformation = tableView.getSelectionModel().getSelectedItem();
+
+        connection = dataBaseFunctions.connectToDB();
+
+        if (tableView.getSelectionModel().getSelectedItem() == null) {
+
+            messageLabel.setTextFill(Color.RED);
+            messageLabel.setText("No item selected");
+        } else {
+
+            dataBaseFunctions.deleteUser(connection, userInformation.getId());
+            refreshTable();
+        }
     }
 
     @FXML
     void editButton() throws SQLException {
 
+        UserInformation userInformation = tableView.getSelectionModel().getSelectedItem();
 
+        connection = dataBaseFunctions.connectToDB();
+
+        if (tableView.getSelectionModel().getSelectedItem() == null) {
+
+            messageLabel.setTextFill(Color.RED);
+            messageLabel.setText("No item selected");
+        } else {
+
+            if (nameTextField != null) {
+                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "name", nameTextField.getText());
+            }
+
+            if (surnameTextField != null) {
+                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "surname", surnameTextField.getText());
+            }
+
+            if (peselTextField != null) {
+                dataBaseFunctions.updateUserInfo(connection, userInformation.getId(), "pesel", peselTextField.getText());
+            }
+
+            if (salaryTextField != null) {
+                dataBaseFunctions.updateUserSalary(connection, userInformation.getId(), Double.parseDouble(salaryTextField.getText()));
+            }
+        }
+
+        clearTextFields();
+        refreshTable();
     }
 
     @FXML
@@ -73,7 +137,7 @@ public class MainSceneController {
         refreshTable();
 
     }
-
+    @FXML
     public void refreshTable() throws SQLException {
         userInformationObservableList.clear();
 
@@ -100,5 +164,20 @@ public class MainSceneController {
         tableView.setItems(userInformationObservableList);
     }
 
+    public void clearTextFields() {
+        nameTextField.clear();
+        surnameTextField.clear();
+        peselTextField.clear();
+        salaryTextField.clear();
+    }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        try {
+            refreshTable();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -52,7 +52,7 @@ public class DataBaseFunctions {
         resultSet.next();
 
         try {
-        query = String.format("INSERT INTO user_information (id, name, surname, pesel, salary)VALUES ('%s', '%s','%s', '%s', '%s')", resultSet.getInt("maxId") + 1, name, surname, pesel, salary );
+        query = String.format("INSERT INTO user_information (id, name, surname, pesel, salary) VALUES ('%s', '%s','%s', '%s', '%s')", resultSet.getInt("maxId") + 1, name, surname, pesel, salary );
 
         statement.executeUpdate(query);
 
@@ -66,13 +66,47 @@ public class DataBaseFunctions {
 
     public ResultSet selectInformation(Connection connection) throws SQLException {
 
-        statement = connection.createStatement();
-
         query = "SELECT * FROM user_information";
 
+        statement = connection.createStatement();
         resultSet = statement.executeQuery(query);
 
         return resultSet;
     }
 
+    public void deleteUser(Connection connection, int id) throws SQLException {
+
+        query = String.format("DELETE FROM user_information WHERE id = '%s';", id);
+
+        statement = connection.createStatement();
+        statement.executeUpdate(query);
+
+        query = "SELECT MAX(id) AS maxId FROM user_information";;
+
+        resultSet = statement.executeQuery(query);
+
+        resultSet.next();
+        int maxId = resultSet.getInt("maxId");
+
+        while (id < maxId) {
+
+            query = String.format("UPDATE user_information SET id = '%s' WHERE id = '%s'", id, id + 1);
+            statement.execute(query);
+            id++;
+        }
+    }
+
+    public void updateUserInfo(Connection connection, int id, String columnName, String value) throws SQLException {
+
+        statement = connection.createStatement();
+        query = String.format("UPDATE user_information SET %s = '%s' WHERE id = '%s'", columnName, value, id);
+        statement.execute(query);
+    }
+
+    public void updateUserSalary(Connection connection, int id, double salary) throws SQLException {
+
+        statement = connection.createStatement();
+        query = String.format("UPDATE user_information SET salary = '%s' WHERE id = '%s'", salary, id);
+        statement.execute(query);
+    }
 }
