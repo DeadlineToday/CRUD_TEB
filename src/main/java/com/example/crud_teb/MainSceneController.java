@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 
@@ -16,6 +13,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainSceneController implements Initializable {
@@ -131,6 +129,8 @@ public class MainSceneController implements Initializable {
 
         UserInformation userInformation = tableView.getSelectionModel().getSelectedItem();
 
+
+
         connection = dataBaseFunctions.connectToDB();
 
         if (tableView.getSelectionModel().getSelectedItem() == null) {
@@ -139,8 +139,26 @@ public class MainSceneController implements Initializable {
             messageLabel.setText("No item selected");
         } else {
 
-            dataBaseFunctions.deleteUser(connection, userInformation.getId());
-            refreshTable();
+            Alert customConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+            customConfirmation.setTitle("Custom Confirmation Dialog");
+            customConfirmation.setHeaderText(null);
+            customConfirmation.setContentText("Do you really want to delete user id " + userInformation.getId() + "?");
+
+            ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+            ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            customConfirmation.getButtonTypes().setAll(yesButton, noButton);
+
+            Optional<ButtonType> resultCustom = customConfirmation.showAndWait();
+
+            if (resultCustom.get() == yesButton) {
+
+                dataBaseFunctions.deleteUser(connection, userInformation.getId());
+                refreshTable();
+
+                messageLabel.setTextFill(Color.GREEN);
+                messageLabel.setText("User deleted");
+            }
         }
     }
 
